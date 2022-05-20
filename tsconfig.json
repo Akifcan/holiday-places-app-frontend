@@ -22,13 +22,17 @@
     "paths": {
       "@/components/*": [
         "components/*"
-      ]
+      ],
+      "@/config/*": [
+        "config/*"
+      ],
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "pages/city/[name]"
   ],
   "exclude": [
     "node_modules"

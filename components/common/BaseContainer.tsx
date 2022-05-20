@@ -1,14 +1,15 @@
 import { Container } from '@chakra-ui/react'
 import { FC, ReactNode } from 'react'
-import Header from './Header'
+import Header, { BreadcrumbItemProps } from './Header'
 
 interface BaseContainerProps {
-    children: ReactNode
+    children: ReactNode,
+    breadcrumbItems?: BreadcrumbItemProps[]
 }
 
-const BaseContainer: FC<BaseContainerProps> = ({ children }) => {
+const BaseContainer: FC<BaseContainerProps> = ({ children, breadcrumbItems }) => {
     return <>
-        <Header />
+        <Header breadcrumbItems={breadcrumbItems} />
         <Container marginBlock={2} maxW={'container.xl'} as='main'>
             {children}
         </Container>
