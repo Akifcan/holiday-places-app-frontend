@@ -1,11 +1,11 @@
-import { Box, Button, Heading, Text } from '@chakra-ui/react'
+import { Text } from '@chakra-ui/react'
 import type { NextPage } from 'next'
-import Header from '@/components/common/Header'
+import BaseContainer from '@/components/common/BaseContainer'
 
 const Home: NextPage = () => {
-  return <Box>
-    <Header />
-  </Box>
+  return <BaseContainer>
+    <Text>home</Text>
+  </BaseContainer>
 }
 
 export default Home
