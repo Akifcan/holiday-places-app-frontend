@@ -47,7 +47,6 @@ const PlaceCard: FC = () => {
     return <VStack
         position={'relative'}
         alignItems={'flex-start'}
-        width={'200px'}
         bg='white'
         overflow={'hidden'}
         borderRadius={'md'}
