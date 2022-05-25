@@ -10,11 +10,11 @@ interface FormFieldProps {
 
 const FormField: FC<FormFieldProps> = ({ children, errorMessage, isRequired, label }) => {
 
+
     const form = useCallback((node: HTMLDivElement) => {
         if (!node) return
         const input = node.querySelector('input') || node.querySelector('textarea') || node.querySelector('select')
         if (!input) return
-
         if (errorMessage) {
             input.setAttribute('is-valid', 'no')
         } else {
@@ -24,8 +24,8 @@ const FormField: FC<FormFieldProps> = ({ children, errorMessage, isRequired, lab
                 input.setAttribute('is-valid', 'yes')
             }
         }
-
-    }, [errorMessage, isRequired])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [errorMessage, isRequired, children])
 
     return <FormControl ref={form} isRequired={isRequired} isInvalid={errorMessage ? true : false}>
         <FormLabel htmlFor='name'>{label}</FormLabel>
