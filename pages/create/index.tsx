@@ -1,14 +1,17 @@
-import { FC, useState, useCallback } from 'react'
-import { Button, Input, Select, Text, VStack } from '@chakra-ui/react'
+import { FC, useState, useCallback, useEffect } from 'react'
+import { Button, Grid, Icon, IconButton, Input, InputGroup, InputRightElement, Select, Text, Tooltip, VStack } from '@chakra-ui/react'
 import BaseContainer from '@/components/common/BaseContainer'
 import Validation, { FormState } from '@/helpers/validation'
 import FormField from '@/components/common/FormField'
 import cities from '@/config/constants/cities'
+import { MdAdd } from 'react-icons/md'
+import PhotoBox from '@/components/create/PhotoBox'
 
 const Create: FC = () => {
 
     const [validation, setValidation] = useState<Validation>()
     const [isDisabled, setDisabled] = useState(true)
+    const [canSubmit, setCanSubmit] = useState(true)
 
     const [name, setName] = useState<FormState<string>>({ value: '', errorMessage: undefined })
     const [logo, setLogo] = useState<FormState<string>>({ value: '', errorMessage: undefined })
@@ -18,6 +21,14 @@ const Create: FC = () => {
 
     const [photos, setPhotos] = useState<string[]>([])
 
+    const addPhoto = () => {
+        setPhotos(prev => [...prev, photoSrc.value])
+        setPhotoSrc({ value: '', errorMessage: '' })
+    }
+
+    const removePhoto = (src: string) => {
+        setPhotos(prev => prev.filter(url => url !== src))
+    }
 
     const form = useCallback((node: HTMLDivElement) => {
         if (!node) return
@@ -30,6 +41,19 @@ const Create: FC = () => {
         })
     }, [])
 
+    useEffect(() => {
+        console.log(isDisabled);
+
+        if (isDisabled) {
+            return setCanSubmit(true)
+        }
+        if (photos.length > 0) {
+            setCanSubmit(false)
+        } else {
+            setCanSubmit(true)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isDisabled, canSubmit, photos])
 
     return <BaseContainer breadcrumbItems={[{ label: 'Ana Sayfa', href: '/' },
     { label: 'Yeni Mekan Ekle', href: '/create' }]}>
@@ -79,7 +103,27 @@ const Create: FC = () => {
                             <option value={'nightClub'}>Gece Kulübü</option>
                         </Select>
                     </FormField>
-                    <Button bg='primary' colorScheme={'blue'} isDisabled={isDisabled}>Gönder</Button>
+                    <FormField isRequired={false} errorMessage={photoSrc.errorMessage} label='Fotoğraf URL Adresi'>
+                        <InputGroup>
+                            <InputRightElement>
+                                <Tooltip label='Eklemek için tıklayın'>
+                                    <IconButton onClick={addPhoto} isDisabled={photoSrc.value.length === 0} aria-label='Resim Ekleyin' icon={<Icon as={MdAdd} />} />
+                                </Tooltip>
+                            </InputRightElement>
+                            <Input value={photoSrc.value} onChange={(e) => {
+                                setPhotoSrc({
+                                    value: e.target.value,
+                                    errorMessage: validation.setValue(e.target.value).notEmpty().validate()
+                                })
+                            }} bg='#eee' id='name' type='text' />
+                        </InputGroup>
+                    </FormField>
+                    <Grid gridTemplateColumns={['1fr 1fr', '1fr 1fr 1fr']} gridGap={5}>
+                        {photos.map(photo => {
+                            return <PhotoBox onRemove={() => removePhoto(photo)} src={photo} key={photo} />
+                        })}
+                    </Grid>
+                    <Button bg='primary' colorScheme={'blue'} isDisabled={canSubmit}>Gönder</Button>
                 </>
             )}
         </VStack>
