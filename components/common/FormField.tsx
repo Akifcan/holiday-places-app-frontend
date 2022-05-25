@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useCallback } from 'react'
 import { FormControl, FormErrorMessage, FormLabel } from '@chakra-ui/react'
 
 interface FormFieldProps {
@@ -9,7 +9,25 @@ interface FormFieldProps {
 }
 
 const FormField: FC<FormFieldProps> = ({ children, errorMessage, isRequired, label }) => {
-    return <FormControl isRequired={isRequired} isInvalid={errorMessage ? true : false}>
+
+    const form = useCallback((node: HTMLDivElement) => {
+        if (!node) return
+        const input = node.querySelector('input') || node.querySelector('textarea') || node.querySelector('select')
+        if (!input) return
+
+        if (errorMessage) {
+            input.setAttribute('is-valid', 'no')
+        } else {
+            if (isRequired && input.value.length === 0) {
+                input.setAttribute('is-valid', 'no')
+            } else {
+                input.setAttribute('is-valid', 'yes')
+            }
+        }
+
+    }, [errorMessage, isRequired])
+
+    return <FormControl ref={form} isRequired={isRequired} isInvalid={errorMessage ? true : false}>
         <FormLabel htmlFor='name'>{label}</FormLabel>
         {children}
         {errorMessage && (
