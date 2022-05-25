@@ -11,13 +11,11 @@ import {
     useDisclosure,
     Button,
     HStack,
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
     Textarea
 } from '@chakra-ui/react'
 import { GrSend } from 'react-icons/gr'
 import { AiFillStar } from 'react-icons/ai'
+import FormField from '../common/FormField'
 
 const CreateComment: FC = () => {
 
@@ -54,11 +52,10 @@ const CreateComment: FC = () => {
                 <ModalCloseButton />
                 <ModalBody>
                     <HStack>
-                        <FormControl isRequired={true}>
-                            <FormLabel htmlFor='name'>Adınız</FormLabel>
+                        <FormField isRequired={true} errorMessage='error' label='İsminiz'>
                             <Input bg='#eee' id='name' type='text' />
-                        </FormControl>
-                        <HStack flex={1} alignSelf='flex-end' pb={2}>
+                        </FormField>
+                        <HStack flex={1} alignSelf='center'>
                             <Icon data-star={1} onMouseOver={(e) => handleStar(e.currentTarget)} as={AiFillStar} color={"primary"} fontSize={'2.5rem'} />
                             <Icon data-star={2} onMouseOver={(e) => handleStar(e.currentTarget)} as={AiFillStar} color={"primary"} fontSize={'2.5rem'} />
                             <Icon data-star={3} onMouseOver={(e) => handleStar(e.currentTarget)} as={AiFillStar} color={"primary"} fontSize={'2.5rem'} />
@@ -66,11 +63,10 @@ const CreateComment: FC = () => {
                             <Icon data-star={5} onMouseOver={(e) => handleStar(e.currentTarget)} as={AiFillStar} color={"blue.300"} fontSize={'2.5rem'} />
                         </HStack>
                     </HStack>
-                    <FormControl marginTop={5} isInvalid={true} isRequired={true}>
-                        <FormLabel htmlFor='comment'>Yorumunuz</FormLabel>
-                        <Textarea id='comment' bg='#eee' placeholder='Düşünceleriniz...' />
-                        <FormErrorMessage>Lütfen bu alanı boş bırakmayın</FormErrorMessage>
-                    </FormControl>
+                    <FormField isRequired={true} label={'Yorumunuz'}>
+                        <Textarea
+                            id='comment' bg='#eee' placeholder='Düşünceleriniz...' />
+                    </FormField>
                 </ModalBody>
 
                 <ModalFooter>
