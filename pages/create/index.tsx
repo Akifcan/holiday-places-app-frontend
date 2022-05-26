@@ -6,6 +6,9 @@ import FormField from '@/components/common/FormField'
 import cities from '@/config/constants/cities'
 import { MdAdd } from 'react-icons/md'
 import PhotoBox from '@/components/create/PhotoBox'
+import { useMutation } from '@apollo/client';
+import { CREATE_PLACE_MUTATION } from '@/apollo/quaries/places'
+
 
 const Create: FC = () => {
 
@@ -18,6 +21,17 @@ const Create: FC = () => {
     const [province, setProvince] = useState<FormState<string>>({ value: '', errorMessage: undefined })
     const [category, setCategory] = useState<FormState<string>>({ value: '', errorMessage: undefined })
     const [photoSrc, setPhotoSrc] = useState<FormState<string>>({ value: '', errorMessage: undefined })
+
+    const [mutateCreatePlace, { data, loading, error }] = useMutation(CREATE_PLACE_MUTATION)
+
+    useEffect(() => {
+        console.log(loading)
+    }, [loading])
+
+    useEffect(() => {
+        if (!data) return
+        console.log(data)
+    }, [data])
 
     const [photos, setPhotos] = useState<string[]>([])
 
@@ -52,6 +66,18 @@ const Create: FC = () => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isDisabled, canSubmit, photos])
+
+    const onSubmit = () => {
+        mutateCreatePlace({
+            variables: {
+                name: name.value,
+                logo: logo.value,
+                photos,
+                province: province.value,
+                category: category.value
+            }
+        })
+    }
 
     return <BaseContainer breadcrumbItems={[{ label: 'Ana Sayfa', href: '/' },
     { label: 'Yeni Mekan Ekle', href: '/create' }]}>
@@ -121,7 +147,7 @@ const Create: FC = () => {
                             return <PhotoBox onRemove={() => removePhoto(photo)} src={photo} key={photo} />
                         })}
                     </Grid>
-                    <Button bg='primary' colorScheme={'blue'} isDisabled={canSubmit}>Gönder</Button>
+                    <Button isLoading={loading} loadingText='Lütfen Bekleyin' onClick={onSubmit} bg='primary' colorScheme={'blue'} isDisabled={canSubmit}>Gönder</Button>
                 </>
             )}
         </VStack>

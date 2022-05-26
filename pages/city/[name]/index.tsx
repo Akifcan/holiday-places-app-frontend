@@ -3,7 +3,7 @@ import BaseContainer from '@/components/common/BaseContainer'
 import { useRouter } from 'next/router'
 import PlaceCard from '@/components/city/PlaceCard'
 import { Grid } from '@chakra-ui/react'
-import PLACES_QUERY, { PlacesQueryProps } from '@/apollo/quaries/places'
+import { PLACES_QUERY, PlacesQueryProps } from '@/apollo/quaries/places'
 import { useLazyQuery } from '@apollo/client'
 import PaginatedQueryProps from '@/apollo/interface/paginatedQuery.interface'
 
@@ -29,7 +29,7 @@ const CityPlaces: FC = () => {
             }
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [router, currentPage])
+    }, [router, currentPage, router.asPath])
 
     return <BaseContainer breadcrumbItems={[
         { label: 'Ana Sayfa', href: '/' },
