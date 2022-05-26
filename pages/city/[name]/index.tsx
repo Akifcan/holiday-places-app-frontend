@@ -3,18 +3,21 @@ import BaseContainer from '@/components/common/BaseContainer'
 import { useRouter } from 'next/router'
 import PlaceCard from '@/components/city/PlaceCard'
 import { Grid } from '@chakra-ui/react'
-import PLACES_QUERY from '@/apollo/quaries/places'
+import PLACES_QUERY, { PlacesQueryProps } from '@/apollo/quaries/places'
 import { useLazyQuery } from '@apollo/client'
+import PaginatedQueryProps from '@/apollo/interface/paginatedQuery.interface'
 
 const CityPlaces: FC = () => {
 
     const router = useRouter()
 
-    const [getPlaces, { data: placesData }] = useLazyQuery(PLACES_QUERY)
+    const [getPlaces, { data: placesData }] = useLazyQuery<{ places: PaginatedQueryProps<PlacesQueryProps[]> }>(PLACES_QUERY)
     const [currentPage, setCurrentPage] = useState(1)
+    const [places, setPlaces] = useState<PlacesQueryProps[]>([])
 
     useEffect(() => {
-        console.log(placesData)
+        if (!placesData) return
+        setPlaces(placesData.places.data)
     }, [placesData])
 
     useEffect(() => {
@@ -33,13 +36,9 @@ const CityPlaces: FC = () => {
         { label: router.query.name as string || '', href: `/city/${router.query.name as string}` },
     ]}>
         <Grid gridTemplateColumns={['1fr', '1fr 1fr', '1fr 1fr 1fr 1fr']} justifyItems='center' gridGap={5}>
-            <PlaceCard />
-            <PlaceCard />
-            <PlaceCard />
-            <PlaceCard />
-            <PlaceCard />
-            <PlaceCard />
-            <PlaceCard />
+            {places.map(place => {
+                return <PlaceCard place={place} key={place._id} />
+            })}
         </Grid>
     </BaseContainer>
 }
