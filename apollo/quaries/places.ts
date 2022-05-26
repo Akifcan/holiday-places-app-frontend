@@ -30,6 +30,19 @@ export const CREATE_PLACE_MUTATION = gql`
         }
 `
 
+export const PLACE_QUERY = gql`
+query PLACE($id: ID!) {
+  place(id: $id) {
+      _id,
+      name
+      logo,
+      category,
+      photos,
+      province
+  }
+}
+`
+
 export const PLACES_QUERY = gql`
 query PLACES ($province: String!, $page: Float!) {
   places(page: $page, province: $province ) {

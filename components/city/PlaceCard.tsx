@@ -3,6 +3,7 @@ import { Icon, Text, VStack, Box, Flex, Image, ComponentWithAs } from '@chakra-u
 import { GoLocation } from 'react-icons/go'
 import { AiOutlineLeft, AiOutlineRight } from 'react-icons/ai'
 import { PlacesQueryProps } from '@/apollo/quaries/places'
+import Link from 'next/link'
 
 const IndicatorIcon: FC<{
     onClick: () => void
@@ -50,6 +51,7 @@ const PlaceCard: FC<PlaceCardProps> = ({ place }) => {
     }
 
     return <VStack
+        cursor={'pointer'}
         position={'relative'}
         alignItems={'flex-start'}
         width='100%'
@@ -64,17 +66,21 @@ const PlaceCard: FC<PlaceCardProps> = ({ place }) => {
         {currentImage < 2 && place.photos.length > 1 && (
             <IndicatorIcon onClick={toRight} imageHeight={imageHeight} icon={AiOutlineRight} position={{ right: 2 }} />
         )}
-        <Flex ref={sliderRef} className='hide-scrollbar' width='100%' height={imageHeight} bg='red' overflowY={'hidden'} overflowX={'auto'} scrollSnapType='x mandatory'>
-            {place.photos.map((photo, index) => {
-                return <Box key={index} width={'100%'} height='inherit' bg='blue' flexShrink={0} scrollSnapAlign='start'>
-                    <Image display={'block'} width={'100%'} height='100%' objectFit={'cover'} alt='resim' src={photo} />
-                </Box>
-            })}
-        </Flex>
-        <Box p={2} marginTop='0 !important' textTransform={'capitalize'}>
-            <Text fontWeight={'bold'} color='dark'>{place.name}</Text>
-            <Text color='muted' fontWeight={'semibold'} as='small'>{place.category}  - <Text as='span'> <Icon as={GoLocation} />  {place.province}</Text> </Text>
-        </Box>
+        <Link passHref={true} href={`/city/adana/${place._id}`}>
+            <Flex ref={sliderRef} className='hide-scrollbar' width='100%' height={imageHeight} bg='red' overflowY={'hidden'} overflowX={'auto'} scrollSnapType='x mandatory'>
+                {place.photos.map((photo, index) => {
+                    return <Box key={index} width={'100%'} height='inherit' bg='blue' flexShrink={0} scrollSnapAlign='start'>
+                        <Image display={'block'} width={'100%'} height='100%' objectFit={'cover'} alt='resim' src={photo} />
+                    </Box>
+                })}
+            </Flex>
+        </Link>
+        <Link passHref={true} href={`/city/adana/${place._id}`}>
+            <Box p={2} marginTop='0 !important' textTransform={'capitalize'}>
+                <Text fontWeight={'bold'} color='dark'>{place.name}</Text>
+                <Text color='muted' fontWeight={'semibold'} as='small'>{place.category}  - <Text as='span'> <Icon as={GoLocation} />  {place.province}</Text> </Text>
+            </Box>
+        </Link>
     </VStack>
 }
 
