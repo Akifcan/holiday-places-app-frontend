@@ -42,8 +42,6 @@ const Create: FC = () => {
     }, [])
 
     useEffect(() => {
-        console.log(isDisabled);
-
         if (isDisabled) {
             return setCanSubmit(true)
         }

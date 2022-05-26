@@ -29,6 +29,9 @@
       "@/helpers/*": [
         "helpers/*"
       ],
+      "@/apollo/*": [
+        "apollo/*"
+      ],
     }
   },
   "include": [
