@@ -1,4 +1,4 @@
-import { FC, useRef, useState, useCallback } from 'react'
+import { FC, useRef, useState, useCallback, useEffect } from 'react'
 import {
     Icon, InputGroup, InputRightElement, Input, IconButton, Tooltip,
     Modal,
@@ -11,22 +11,33 @@ import {
     useDisclosure,
     Button,
     HStack,
-    Textarea
+    Textarea,
+    useToast
 } from '@chakra-ui/react'
 import { GrSend } from 'react-icons/gr'
 import { AiFillStar } from 'react-icons/ai'
 import FormField from '../common/FormField'
 import Validation, { FormState } from '@/helpers/validation'
+import { useMutation } from '@apollo/client'
+import { CommentQueryProps, CREATE_COMMENT_MUTATION } from '@/apollo/quaries/comments'
 
-const CreateComment: FC = () => {
+interface CreateCommentProps {
+    placeId: string,
+    onCommentCreated: (comment: CommentQueryProps) => void
+}
+
+const CreateComment: FC<CreateCommentProps> = ({ placeId, onCommentCreated }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const toast = useToast()
     const givenStar = useRef(3)
 
     const [validation, setValidation] = useState<Validation>()
     const [username, setUsername] = useState<FormState<string>>({ value: '', errorMessage: undefined })
     const [comment, setComment] = useState<FormState<string>>({ value: '', errorMessage: undefined })
     const [isDisabled, setDisabled] = useState(true)
+
+    const [mutateCreateComment, { data, loading }] = useMutation(CREATE_COMMENT_MUTATION);
 
     const handleStar = (e: SVGElement) => {
         givenStar.current = parseInt(e.dataset!.star!)
@@ -51,10 +62,30 @@ const CreateComment: FC = () => {
     }
 
     const onSubmit = () => {
-        console.log(username.value)
-        console.log(comment.value)
-        console.log(givenStar.current)
+        mutateCreateComment({
+            variables: {
+                placeId,
+                username: username.value,
+                rate: givenStar.current,
+                body: comment.value
+            }
+        })
     }
+
+    useEffect(() => {
+        if (!data) return
+
+        toast({
+            title: 'Yorumunuz Oluşturldu',
+            description: "Düşünceleriniz için teşekkür ederiz.",
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+        })
+        onCommentCreated(data.createComment)
+        onClose()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [data])
 
     const form = useCallback((node: HTMLDivElement) => {
         if (!node) return
@@ -116,7 +147,7 @@ const CreateComment: FC = () => {
                     <Button variant={'ghost'} mr={3} onClick={onClose}>
                         Geri Dön
                     </Button>
-                    <Button isDisabled={isDisabled} onClick={onSubmit} colorScheme={'blue'} bg='primary'>Paylaş</Button>
+                    <Button isLoading={loading} loadingText='Lütfen Bekleyin' isDisabled={isDisabled} onClick={onSubmit} colorScheme={'blue'} bg='primary'>Paylaş</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>

@@ -1,16 +1,22 @@
 import { FC } from 'react'
 import { Avatar, HStack, Text, VStack, Box } from '@chakra-ui/react'
+import { CommentQueryProps } from '@/apollo/quaries/comments'
 
-const CommentCard: FC = () => {
+interface CommentCardProps {
+    comment: CommentQueryProps
+}
+
+const CommentCard: FC<CommentCardProps> = ({ comment }) => {
+    console.log(comment)
     return <VStack bg='white' p={5} borderRadius='md' alignItems={'flex-start'} shadow='lg'>
         <HStack>
-            <Avatar />
+            <Avatar src={comment.profilePhoto} />
             <Box>
-                <Text fontWeight={'bold'}>Akifcan Kara</Text>
-                <Text as='time'>5 Gün Önce - 5 Yıldız Verdi</Text>
+                <Text fontWeight={'bold'}>{comment.username}</Text>
+                <Text as='time'>5 Gün Önce - {comment.rate} Yıldız Verdi</Text>
             </Box>
         </HStack>
-        <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius, illum, odio illo veniam corporis vitae dolorum asperiores adipisci quia iste unde ratione, excepturi soluta dignissimos. Iste, nam velit. Recusandae, est.</Text>
+        <Text>{comment.body}</Text>
     </VStack>
 }
 

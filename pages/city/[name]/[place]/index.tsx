@@ -9,12 +9,19 @@ import Rates from '@/components/detail/Rates'
 import CreateComment from '@/components/detail/CreateComment'
 import { useLazyQuery } from '@apollo/client'
 import { PlacesQueryProps, PLACE_QUERY } from '@/apollo/quaries/places'
+import { CommentQueryProps } from '@/apollo/quaries/comments'
 
 const PlaceDetail: FC = () => {
 
     const router = useRouter()
     const [isLoading, setLoading] = useState(true)
     const [getPlaces, { data: placesData }] = useLazyQuery<{ place: PlacesQueryProps }>(PLACE_QUERY)
+
+    const [comments, setComments] = useState<CommentQueryProps[]>([])
+
+    const onCommentCreated = (comment: CommentQueryProps) => {
+        setComments(prev => [comment, ...prev])
+    }
 
     useEffect(() => {
         if (!placesData) return
@@ -46,16 +53,10 @@ const PlaceDetail: FC = () => {
                     </Box>
                     <VStack alignItems={'stretch'}>
                         <Rates />
-                        <CreateComment />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
-                        <CommentCard />
+                        <CreateComment onCommentCreated={onCommentCreated} placeId={placesData!.place._id} />
+                        {comments.map((comment) => {
+                            return <CommentCard comment={comment} key={comment._id} />
+                        })}
                     </VStack>
                 </>
             )}
